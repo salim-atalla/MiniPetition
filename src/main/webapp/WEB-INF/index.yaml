@@ -1,10 +1,12 @@
 indexes:
-    - kind: Petition
-      properties:
-          - name: timestamp
-            direction: desc
+  - kind: Petition
+    properties:
+      - name: timestamp
+        direction: desc
 
-    - kind: Petition
-      properties:
-          - name: signatures
-            direction: asc
+  - kind: Petition
+    properties:
+      - name: signatures
+        direction: asc
+      - name: timestamp
+        direction: desc
