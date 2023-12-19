@@ -57,7 +57,7 @@
                     // Fetch the list of petitions from the backend
                     m.request({
                         method: "GET",
-                        url: "_ah/api/petitionApi/v1/petitions",
+                        url: "_ah/api/petitionApi/v1/petitions/",
                     })
                         .then((response) => {
                             PetitionList.petitions = response;
@@ -105,7 +105,7 @@
                     // Create a new petition and reload the list
                     m.request({
                         method: "POST",
-                        url: "_ah/api/petitionApi/v1/createPetition",
+                        url: "_ah/api/petitionApi/v1/createPetition/",
                         data: {
                             title: PetitionForm.title,
                             content: PetitionForm.content,
