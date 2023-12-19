@@ -16,6 +16,15 @@ mvn appengine:deploy
 
 ---
 
+## Deploy openapi.json
+
+```bash
+
+gcloud endpoints services deploy openapi.json
+```
+
+---
+
 ## Open Project In Browser
 
 ```bash
