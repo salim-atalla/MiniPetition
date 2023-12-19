@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(name = "petitionApi", version = "v1", audiences = "315994710664-2i0jopet152a0vl8kpluhtmhq5ttjs3t.apps.googleusercontent.com", clientIds = {
-        "315994710664-2i0jopet152a0vl8kpluhtmhq5ttjs3t.apps.googleusercontent.com" }, namespace = @ApiNamespace(ownerDomain = "petitionapp.example.com", ownerName = "petitionapp.example.com", packagePath = "v1"))
+        "315994710664-2i0jopet152a0vl8kpluhtmhq5ttjs3t.apps.googleusercontent.com" }, namespace = @ApiNamespace(ownerDomain = "petitionapp.petition-app.com", ownerName = "petitionapp.petition-app.com", packagePath = ""))
 public class PetitionApi {
 
     private final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
@@ -100,7 +100,7 @@ public class PetitionApi {
         }
     }
 
-    @ApiMethod(name = "getPetitions", httpMethod = ApiMethod.HttpMethod.GET)
+    @ApiMethod(name = "petitions", httpMethod = ApiMethod.HttpMethod.GET)
     public List<Petition> getPetitions() {
         try {
             // Query all petition entities from Datastore
