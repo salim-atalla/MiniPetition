@@ -1,5 +1,4 @@
 
-
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -23,7 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(name = "petitionApi", version = "v1", namespace = @ApiNamespace(ownerDomain = "backend.petitionapp", ownerName = "backend.petitionapp", packagePath = "v1"))
+@Api(name = "petitionApi", version = "v1", audiences = "315994710664-2i0jopet152a0vl8kpluhtmhq5ttjs3t.apps.googleusercontent.com", clientIds = {
+        "315994710664-2i0jopet152a0vl8kpluhtmhq5ttjs3t.apps.googleusercontent.com" }, namespace = @ApiNamespace(ownerDomain = "petitionapp.example.com", ownerName = "petitionapp.example.com", packagePath = "v1"))
 public class PetitionApi {
 
     private final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
