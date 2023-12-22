@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Petition</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script src="https://unpkg.com/mithril/mithril.js"></script>
+
+<script src="https://unpkg.com/jwt-decode/build/jwt-decode.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+    body {
+        background-color: black;
+    }
+</style>
+
+</head>
+<body>
+
+<script>	
+
+var Petition = {
+    userMail: null,
+    listTop: [],
+    listUser: [],
+        
+    create: function(user, title, tag) {  
+        m.request({
+            method: "GET",
+            url: "_ah/api/petitionApi/v1/createPetition/"+user+"/"+title+"/"+tag           
+        })
+        .then(function(result) {
+            console.log("Petition created:", result);
+            Petition.loadTopPetitions();
+        })
+        .catch(function(error) {
+            console.error("Error creating petition:", error.toString());
+            CreatePetitionView.error = "Error: could not create a petition, check that you are authentified and that the title you are using is available.";            
+        });
+    },
+
+    sign: function(user, title) {
+        m.request({
+            method: "GET",
+            url: "_ah/api/petitionApi/v1/signPetition/"+user+"/"+title
+        })
+        .then(function(result) {
+            console.log("Petition signed:", result);
+        })
+        .catch(function(error) {
+            console.error("Error signing petition:", error.toString());  
+            SignPetitionView.error = "Error: could not sign this petition, check that you are authentified and that the petition exists. You may also have already signed this petition.";   
+        });
+    },
+
+    loadTopPetitions: function() {
+        m.request({
+            method: "GET",
+            url: "_ah/api/petitionApi/v1/topPetitions/"
+        })
+        .then(function(result) {
+            console.log("got:", result.items)
+            Petition.listTop = result.items
+        })
+        .catch(function(error) {
+            console.error("Error loading top petitions:", error.toString());            
+        });
+    }
+};
+
+var CurrentUserView = {
+    userMail: null,
+
+    handleGoogleSignIn: function(response) {
+        const responsePayload = jwt_decode(response.credential);
+
+        CurrentUserView.userMail = responsePayload.email;
+
+        console.log("Google Email: " + CurrentUserView.userMail);
+
+        m.redraw();
+    },
+
+    view: function() {
+		return m('div', [
+			m('div',{class:'subtitle'},"Current User"),
+
+            m('label',{class:'label'}, "enter an e-mail :"),
+
+			m("input[type=text][placeholder=email]", {
+				value: CreatePetitionView.userMail,
+				class: 'input is-rounded',
+				 oninput: function (e) {
+                    CurrentUserView.userMail=e.target.value;
+                 },
+                }),
+
+            m('label',{class:'label'}, ""),
+
+			m('button',{
+				class: 'button is-dark',
+				onclick: function(e) {
+                    Petition.userMail=CurrentUserView.userMail;
+                }
+			},"ok"),
+
+            
+            m('label',{class:'label'}, ""),
+		])
+	}	
+};
+
+var CreatePetitionView = {
+    title: "",
+    tag: "",
+    error: "",
+    created: false,
+
+    view: function() {
+		return m('div', [
+			m('div',{class:'subtitle'},"Create Petition"),
+
+            m('label',{class:'label'}, "enter a petition title :"),            
+			m("input[type=text][placeholder=title]", {
+				value: CreatePetitionView.title,
+				class: 'input is-rounded',
+				 oninput: function (e) {
+                    CreatePetitionView.title=e.target.value;
+                    CreatePetitionView.created = false;
+                },
+			}),
+
+            m('label',{class:'label'}, ""),
+
+            m('label',{class:'label'}, "enter tags :"),
+            m("input[type=text][placeholder=tag1, tag2]", {
+				value: CreatePetitionView.tag,
+				class: 'input is-rounded',
+				 oninput: function (e) {
+                    CreatePetitionView.tag=e.target.value;
+                    CreatePetitionView.created = false;
+                },
+			}),
+
+            m('label',{class:'label'}, ""),
+
+			m('button',{
+				class: 'button is-dark',
+				onclick: function(e) {
+                    CreatePetitionView.error="";
+                    CreatePetitionView.created = true;
+                    Petition.create(Petition.userMail, CreatePetitionView.title, CreatePetitionView.tag);
+                }
+			},"create"),
+
+            CreatePetitionView.error ? m('label', {class: 'label', style: 'color: black;' }, CreatePetitionView.error)
+                : CreatePetitionView.created ? m('label',{class:'label'}, "You have created the petition : "+CreatePetitionView.title+" ; tags : "+CreatePetitionView.tag)
+                : null,
+        ])
+	},
+};
+
+var SignPetitionView = {
+    title: "",
+    error: "",
+    signed: false,
+
+    view: function() {
+        return m('div', [
+            m('div', { class: 'subtitle' }, "Sign Petition"),
+
+            m('label',{class:'label'}, "enter a petition title :"),  
+            m("input[type=text][placeholder=title]", {
+                value: SignPetitionView.title,
+                class: 'input is-rounded',
+                oninput: function (e) {
+                    SignPetitionView.error="";
+                    SignPetitionView.title = e.target.value;
+                    SignPetitionView.signed = false;
+                },
+            }),
+            
+            m('label',{class:'label'}, ""),
+
+            m('button', {
+                class: 'button is-dark',
+                onclick: function (e) {
+                    SignPetitionView.signed = true;
+                    Petition.sign(Petition.userMail, SignPetitionView.title);
+                } 
+            }, "sign"),
+
+            SignPetitionView.error ? m('label', {class: 'label', style: 'color: black;' }, CreatePetitionView.error)
+                : SignPetitionView.signed ? m('label',{class:'label'}, "Already signed : "+SignPetitionView.title) 
+                : null,
+        ])
+    }
+};
+
+var TopPetitionView = {
+    oninit: Petition.loadTopPetitions,
+
+    view: function() {
+        return m('div', [
+            m('div',{class:'subtitle'},"Top Petitions"),
+	        m('table', {class:'table is-striped'},[
+        	    m('tr', [
+                    m('th', {width:"100px"}, "Title"),
+                    m('th', {width:"100px"}, "Author"),
+                    m('th', {width:"100px"}, "Date"),
+                    m('th', {width:"100px"}, "Tag"),
+	                ]),
+    	        Petition.listTop.map(function(item) {
+	                return m("tr", [
+                        m('td', m('label', item.properties.title)),
+            	        m('td', m('label', item.properties.author)),
+                        m('td', m('label', item.properties.date)),
+                        m('td', m('label', item.properties.tags)),
+	                ])
+    	        })
+	        ])
+        ])
+    }
+};
+
+var MainApp = {
+    view: function() {
+        return m('div', {class: 'container'}, [
+            m("h1", {class: 'title'}, 'Petition-App'),
+            m("div", {class: 'box'}, m(CurrentUserView)),
+
+            m('div', {class: 'box'}, m(CreatePetitionView)),
+            m('div', {class: 'box'}, m(SignPetitionView)),
+
+            m('div', {class: 'box'}, m(TopPetitionView)),
+        ]);
+    }
+};
+
+m.mount(document.body, MainApp);
+
+</script>

@@ -1,0 +1,14 @@
+indexes:
+- kind: Petition
+  properties:
+  - name: title
+  - name: author
+  - name: date
+    direction: desc
+
+- kind: Petitioner
+  properties:
+  - name: petitioner
+  - name: petition
+  - name: date
+    direction: desc
