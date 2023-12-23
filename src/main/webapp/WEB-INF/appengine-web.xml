@@ -17,8 +17,8 @@
   </system-properties>
 <!-- [START env_variables] -->
     <env-variables>
-        <!-- <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" /> -->
-        <env-var name="ENDPOINTS_SERVICE_NAME" value="petition-app-408416.appspot.com" />
+<!--         <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" /> -->
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="minipetition.appspot.com" />
 
     </env-variables>
     <!-- [END env_variables] -->

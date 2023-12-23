@@ -2,7 +2,13 @@ indexes:
 - kind: Petition
   properties:
   - name: title
-  - name: content
-  - name: signatures
-  - name: timestamp
+  - name: author
+  - name: date
+    direction: desc
+
+- kind: Petitioner
+  properties:
+  - name: petitioner
+  - name: petition
+  - name: date
     direction: desc
